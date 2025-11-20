@@ -19,7 +19,7 @@ const swaggerOptions = {
     },
     servers: [
       { url: `http://localhost:${PORT}`, description: 'Local' },
-      { url: 'https://your-app-name.onrender.com', description: 'Production' }
+      { url: 'https://weather-api-kuyakim.onrender.com', description: 'Production' }
     ]
   },
   apis: ['./server.js']
