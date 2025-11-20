@@ -17,7 +17,10 @@ const swaggerOptions = {
       version: '1.0.0',
       description: 'API for weather data management'
     },
-    servers: [{ url: `http://localhost:${PORT}` }]
+    servers: [
+      { url: `http://localhost:${PORT}`, description: 'Local' },
+      { url: 'https://your-app-name.onrender.com', description: 'Production' }
+    ]
   },
   apis: ['./server.js']
 };
@@ -25,6 +28,7 @@ const swaggerOptions = {
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.json());
+
 
 // Weather schema
 const weatherSchema = new mongoose.Schema({
@@ -125,9 +129,7 @@ app.get('/api/v1/weather/date/:date', async (req, res) => {
   }
 });
 
-//
-// 🚫 KEEP THESE BELOW
-//
+
 app.get('/api/v1/weather/:id', async (req, res) => {
   try {
     const w = await Weather.findById(req.params.id);
