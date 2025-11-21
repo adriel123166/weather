@@ -55,10 +55,64 @@ const alertSchema = new mongoose.Schema({
 
 const Alert = mongoose.model('Alert', alertSchema);
 
-// Root
+/**
+ * @swagger
+ * /:
+ *   get:
+ *     summary: API Health Check
+ *     description: Returns API status
+ *     responses:
+ *       200:
+ *         description: API is running successfully
+ */
 app.get('/', (req, res) => res.send('✅ Weather API running'));
 
-// Create
+/**
+ * @swagger
+ * /api/v1/weather:
+ *   post:
+ *     summary: Create a new weather record
+ *     tags: [Weather]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - recordedAt
+ *             properties:
+ *               station:
+ *                 type: string
+ *                 example: "Station A"
+ *               recordedAt:
+ *                 type: string
+ *                 format: date-time
+ *                 example: "2025-11-21T10:30:00Z"
+ *               temperature:
+ *                 type: number
+ *                 example: 25.5
+ *               humidity:
+ *                 type: number
+ *                 example: 60
+ *               pressure:
+ *                 type: number
+ *                 example: 1013
+ *               windSpeed:
+ *                 type: number
+ *                 example: 15
+ *               windDirection:
+ *                 type: string
+ *                 example: "NW"
+ *               notes:
+ *                 type: string
+ *                 example: "Clear sky"
+ *     responses:
+ *       201:
+ *         description: Weather record created successfully
+ *       400:
+ *         description: Bad request
+ */
 app.post('/api/v1/weather', async (req, res) => {
   try {
     const w = new Weather(req.body);
@@ -69,7 +123,25 @@ app.post('/api/v1/weather', async (req, res) => {
   }
 });
 
-// Get all
+/**
+ * @swagger
+ * /api/v1/weather:
+ *   get:
+ *     summary: Get all weather records
+ *     tags: [Weather]
+ *     parameters:
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *         description: Maximum number of records to return
+ *         example: 10
+ *     responses:
+ *       200:
+ *         description: List of weather records
+ *       500:
+ *         description: Server error
+ */
 app.get('/api/v1/weather', async (req, res) => {
   try {
     const q = Weather.find().sort({ recordedAt: -1 });
@@ -81,9 +153,20 @@ app.get('/api/v1/weather', async (req, res) => {
   }
 });
 
-//
-// ✅ MOVE THESE SPECIAL ROUTES BEFORE /:id
-//
+/**
+ * @swagger
+ * /api/v1/weather/latest:
+ *   get:
+ *     summary: Get the latest weather record
+ *     tags: [Weather]
+ *     responses:
+ *       200:
+ *         description: Latest weather record
+ *       404:
+ *         description: No records found
+ *       500:
+ *         description: Server error
+ */
 app.get('/api/v1/weather/latest', async (req, res) => {
   try {
     const latest = await Weather.findOne().sort({ recordedAt: -1 });
@@ -94,6 +177,19 @@ app.get('/api/v1/weather/latest', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/weather/stats:
+ *   get:
+ *     summary: Get weather statistics
+ *     tags: [Weather]
+ *     description: Returns average, min, max temperature and humidity statistics
+ *     responses:
+ *       200:
+ *         description: Weather statistics
+ *       500:
+ *         description: Server error
+ */
 app.get('/api/v1/weather/stats', async (req, res) => {
   try {
     const pipeline = [
@@ -116,7 +212,27 @@ app.get('/api/v1/weather/stats', async (req, res) => {
   }
 });
 
-// By date (YYYY-MM-DD)
+/**
+ * @swagger
+ * /api/v1/weather/date/{date}:
+ *   get:
+ *     summary: Get weather records by date
+ *     tags: [Weather]
+ *     parameters:
+ *       - in: path
+ *         name: date
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: date
+ *         description: Date in YYYY-MM-DD format
+ *         example: "2025-11-21"
+ *     responses:
+ *       200:
+ *         description: Weather records for the specified date
+ *       400:
+ *         description: Invalid date format
+ */
 app.get('/api/v1/weather/date/:date', async (req, res) => {
   try {
     const start = new Date(req.params.date);
@@ -129,7 +245,27 @@ app.get('/api/v1/weather/date/:date', async (req, res) => {
   }
 });
 
-
+/**
+ * @swagger
+ * /api/v1/weather/{id}:
+ *   get:
+ *     summary: Get weather record by ID
+ *     tags: [Weather]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Weather record ID
+ *     responses:
+ *       200:
+ *         description: Weather record found
+ *       404:
+ *         description: Weather record not found
+ *       500:
+ *         description: Server error
+ */
 app.get('/api/v1/weather/:id', async (req, res) => {
   try {
     const w = await Weather.findById(req.params.id);
@@ -140,6 +276,51 @@ app.get('/api/v1/weather/:id', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/weather/{id}:
+ *   put:
+ *     summary: Update entire weather record
+ *     tags: [Weather]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Weather record ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               station:
+ *                 type: string
+ *               recordedAt:
+ *                 type: string
+ *                 format: date-time
+ *               temperature:
+ *                 type: number
+ *               humidity:
+ *                 type: number
+ *               pressure:
+ *                 type: number
+ *               windSpeed:
+ *                 type: number
+ *               windDirection:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Weather record updated
+ *       404:
+ *         description: Weather record not found
+ *       400:
+ *         description: Bad request
+ */
 app.put('/api/v1/weather/:id', async (req, res) => {
   try {
     const w = await Weather.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
@@ -150,6 +331,51 @@ app.put('/api/v1/weather/:id', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/weather/{id}:
+ *   patch:
+ *     summary: Partially update weather record
+ *     tags: [Weather]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Weather record ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               station:
+ *                 type: string
+ *               recordedAt:
+ *                 type: string
+ *                 format: date-time
+ *               temperature:
+ *                 type: number
+ *               humidity:
+ *                 type: number
+ *               pressure:
+ *                 type: number
+ *               windSpeed:
+ *                 type: number
+ *               windDirection:
+ *                 type: string
+ *               notes:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Weather record partially updated
+ *       404:
+ *         description: Weather record not found
+ *       400:
+ *         description: Bad request
+ */
 app.patch('/api/v1/weather/:id', async (req, res) => {
   try {
     const w = await Weather.findByIdAndUpdate(req.params.id, { $set: req.body }, { new: true, runValidators: true });
@@ -160,6 +386,27 @@ app.patch('/api/v1/weather/:id', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/weather/{id}:
+ *   delete:
+ *     summary: Delete weather record
+ *     tags: [Weather]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Weather record ID
+ *     responses:
+ *       200:
+ *         description: Weather record deleted
+ *       404:
+ *         description: Weather record not found
+ *       500:
+ *         description: Server error
+ */
 app.delete('/api/v1/weather/:id', async (req, res) => {
   try {
     const w = await Weather.findByIdAndDelete(req.params.id);
@@ -170,7 +417,18 @@ app.delete('/api/v1/weather/:id', async (req, res) => {
   }
 });
 
-// Alerts
+/**
+ * @swagger
+ * /api/v1/alerts:
+ *   get:
+ *     summary: Get all alerts
+ *     tags: [Alerts]
+ *     responses:
+ *       200:
+ *         description: List of all alerts
+ *       500:
+ *         description: Server error
+ */
 app.get('/api/v1/alerts', async (req, res) => {
   try {
     const list = await Alert.find().sort({ createdAt: -1 });
@@ -180,6 +438,38 @@ app.get('/api/v1/alerts', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/alerts:
+ *   post:
+ *     summary: Create a new alert
+ *     tags: [Alerts]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *                 example: "Storm Warning"
+ *               message:
+ *                 type: string
+ *                 example: "Heavy rain expected"
+ *               level:
+ *                 type: string
+ *                 enum: [info, warning, critical]
+ *                 example: "warning"
+ *               active:
+ *                 type: boolean
+ *                 example: true
+ *     responses:
+ *       201:
+ *         description: Alert created successfully
+ *       400:
+ *         description: Bad request
+ */
 app.post('/api/v1/alerts', async (req, res) => {
   try {
     const a = new Alert(req.body);
@@ -190,6 +480,27 @@ app.post('/api/v1/alerts', async (req, res) => {
   }
 });
 
+/**
+ * @swagger
+ * /api/v1/alerts/{id}:
+ *   delete:
+ *     summary: Delete an alert
+ *     tags: [Alerts]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: Alert ID
+ *     responses:
+ *       200:
+ *         description: Alert deleted successfully
+ *       404:
+ *         description: Alert not found
+ *       500:
+ *         description: Server error
+ */
 app.delete('/api/v1/alerts/:id', async (req, res) => {
   try {
     const a = await Alert.findByIdAndDelete(req.params.id);
