@@ -2,12 +2,18 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+
+// Serve swagger.json directly
+app.get('/api-docs/swagger.json', (req, res) => {
+  res.json(swaggerDocument);
+});
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
