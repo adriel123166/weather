@@ -7,16 +7,21 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 app.use(cors());
-const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
+
+// Serve static files from public directory
+app.use(express.static('public'));
 
 // Serve swagger.json directly
 app.get('/api-docs/swagger.json', (req, res) => {
   res.json(swaggerDocument);
 });
 
-// Setup Swagger BEFORE other middleware
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Redirect /api-docs to /swagger.html
+app.get('/api-docs', (req, res) => {
+  res.redirect('/swagger.html');
+});
+
 app.use(express.json());
 
 // MongoDB connection for serverless
