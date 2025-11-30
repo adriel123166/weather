@@ -29,6 +29,33 @@ const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use(express.json());
 
+// MongoDB connection for serverless
+let isConnected = false;
+
+async function connectDB() {
+  if (isConnected) {
+    return;
+  }
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+    isConnected = true;
+    console.log('✅ Connected to MongoDB');
+  } catch (err) {
+    console.error('❌ DB connection error:', err.message);
+    throw err;
+  }
+}
+
+// Middleware to ensure DB connection for each request
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ message: 'Database connection failed' });
+  }
+});
+
 // Weather schema
 const weatherSchema = new mongoose.Schema({
   station: String,
@@ -136,6 +163,41 @@ app.get('/api/v1/weather', async (req, res) => {
     if (req.query.limit) q.limit(parseInt(req.query.limit));
     const list = await q.exec();
     res.json(list);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+/**
+ * @swagger
+ * /api/v1/weather/stats:
+ *   get:
+ *     summary: Get weather statistics
+ *     tags: [Weather]
+ *     description: Returns average, min, max temperature and humidity statistics
+ *     responses:
+ *       200:
+ *         description: Weather statistics
+ *       500:
+ *         description: Server error
+ */
+app.get('/api/v1/weather/stats', async (req, res) => {
+  try {
+    const pipeline = [
+      {
+        $group: {
+          _id: null,
+          avgTemp: { $avg: '$temperature' },
+          avgHumidity: { $avg: '$humidity' },
+          minTemp: { $min: '$temperature' },
+          maxTemp: { $max: '$temperature' },
+          count: { $sum: 1 }
+        }
+      },
+      { $project: { _id: 0 } }
+    ];
+    const [stats] = await Weather.aggregate(pipeline);
+    res.json(stats || { avgTemp: null, avgHumidity: null, minTemp: null, maxTemp: null, count: 0 });
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -258,49 +320,13 @@ app.delete('/api/v1/weather/:id', async (req, res) => {
   }
 });
 
-/**
- * @swagger
- * /api/v1/weather/stats:
- *   get:
- *     summary: Get weather statistics
- *     tags: [Weather]
- *     description: Returns average, min, max temperature and humidity statistics
- *     responses:
- *       200:
- *         description: Weather statistics
- *       500:
- *         description: Server error
- */
-app.get('/api/v1/weather/stats', async (req, res) => {
-  try {
-    const pipeline = [
-      {
-        $group: {
-          _id: null,
-          avgTemp: { $avg: '$temperature' },
-          avgHumidity: { $avg: '$humidity' },
-          minTemp: { $min: '$temperature' },
-          maxTemp: { $max: '$temperature' },
-          count: { $sum: 1 }
-        }
-      },
-      { $project: { _id: 0 } }
-    ];
-    const [stats] = await Weather.aggregate(pipeline);
-    res.json(stats || { avgTemp: null, avgHumidity: null, minTemp: null, maxTemp: null, count: 0 });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
-});
-
-// Start server with DB connect
+// Start server with DB connect (for local development)
 async function startServer() {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
-    console.log('✅ Connected to MongoDB');
+    await connectDB();
     app.listen(PORT, () => console.log(`🚀 Server listening on http://localhost:${PORT}`));
   } catch (err) {
-    console.error('❌ DB connection error:', err.message);
+    console.error('❌ Server start error:', err.message);
   }
 }
 
