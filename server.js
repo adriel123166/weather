@@ -15,6 +15,7 @@ app.get('/api-docs/swagger.json', (req, res) => {
   res.json(swaggerDocument);
 });
 
+// Setup Swagger BEFORE other middleware
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(express.json());
 
@@ -35,16 +36,6 @@ async function connectDB() {
   }
 }
 
-// Middleware to ensure DB connection for each request
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    res.status(500).json({ message: 'Database connection failed' });
-  }
-});
-
 // Weather schema
 const weatherSchema = new mongoose.Schema({
   station: String,
@@ -60,6 +51,16 @@ const weatherSchema = new mongoose.Schema({
 const Weather = mongoose.model('Weather', weatherSchema);
 
 app.get('/', (req, res) => res.send('✅ Weather API running'));
+
+// DB Connection middleware ONLY for API routes
+app.use('/api', async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ message: 'Database connection failed' });
+  }
+});
 
 app.post('/api/v1/weather', async (req, res) => {
   try {
