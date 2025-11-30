@@ -1,0 +1,231 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Weather API",
+    "version": "1.0.0",
+    "description": "API for weather data management"
+  },
+  "servers": [
+    {
+      "url": "https://weather-api-kuyakim.vercel.app",
+      "description": "Production"
+    },
+    {
+      "url": "http://localhost:3000",
+      "description": "Local"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Weather",
+      "description": "Weather data operations"
+    }
+  ],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "API Health Check",
+        "responses": {
+          "200": {
+            "description": "API is running successfully"
+          }
+        }
+      }
+    },
+    "/api/v1/weather": {
+      "post": {
+        "summary": "Create a new weather record",
+        "tags": ["Weather"],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeatherInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Weather record created successfully"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      },
+      "get": {
+        "summary": "Get all weather records",
+        "tags": ["Weather"],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Maximum number of records to return",
+            "example": 10
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of weather records"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/v1/weather/stats": {
+      "get": {
+        "summary": "Get weather statistics",
+        "tags": ["Weather"],
+        "description": "Returns average, min, max temperature and humidity statistics",
+        "responses": {
+          "200": {
+            "description": "Weather statistics"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
+    "/api/v1/weather/{id}": {
+      "get": {
+        "summary": "Get weather record by ID",
+        "tags": ["Weather"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Weather record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Weather record found"
+          },
+          "404": {
+            "description": "Weather record not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      },
+      "put": {
+        "summary": "Update weather record",
+        "tags": ["Weather"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Weather record ID"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WeatherInput"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Weather record updated"
+          },
+          "404": {
+            "description": "Weather record not found"
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete weather record",
+        "tags": ["Weather"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Weather record ID"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Weather record deleted"
+          },
+          "404": {
+            "description": "Weather record not found"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WeatherInput": {
+        "type": "object",
+        "required": ["recordedAt"],
+        "properties": {
+          "station": {
+            "type": "string",
+            "example": "Station A"
+          },
+          "recordedAt": {
+            "type": "string",
+            "format": "date-time",
+            "example": "2025-12-01T10:30:00Z"
+          },
+          "temperature": {
+            "type": "number",
+            "example": 25.5
+          },
+          "humidity": {
+            "type": "number",
+            "example": 60
+          },
+          "pressure": {
+            "type": "number",
+            "example": 1013
+          },
+          "windSpeed": {
+            "type": "number",
+            "example": 15
+          },
+          "windDirection": {
+            "type": "string",
+            "example": "NW"
+          },
+          "notes": {
+            "type": "string",
+            "example": "Clear sky"
+          }
+        }
+      }
+    }
+  }
+}
