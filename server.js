@@ -22,8 +22,9 @@ const swaggerOptions = {
       { url: 'https://weather-api-kuyakim.vercel.app', description: 'Production' }
     ]
   },
-  apis: ['./server.js', './api/index.js']
+  apis: [__filename] // Use __filename instead of './server.js'
 };
+
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
