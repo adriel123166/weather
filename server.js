@@ -22,7 +22,7 @@ const swaggerOptions = {
       { url: 'https://weather-api-kuyakim.vercel.app', description: 'Production' }
     ]
   },
-  apis: ['./server.js']
+  apis: ['./server.js', './api/index.js']
 };
 
 const swaggerSpec = swaggerJsdoc(swaggerOptions);
@@ -320,20 +320,18 @@ app.delete('/api/v1/weather/:id', async (req, res) => {
   }
 });
 
-// Start server with DB connect (for local development)
-async function startServer() {
-  try {
-    await connectDB();
-    app.listen(PORT, () => console.log(`🚀 Server listening on http://localhost:${PORT}`));
-  } catch (err) {
-    console.error('❌ Server start error:', err.message);
+// Start server (local development only)
+if (require.main === module) {
+  async function startServer() {
+    try {
+      await connectDB();
+      app.listen(PORT, () => console.log(`🚀 Server listening on http://localhost:${PORT}`));
+    } catch (err) {
+      console.error('❌ Server start error:', err.message);
+    }
   }
-}
-
-// Only start server if not in serverless environment
-if (process.env.VERCEL !== '1') {
   startServer();
 }
 
-// Export for Vercel serverless
+// Export for Vercel
 module.exports = app;
