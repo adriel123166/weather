@@ -2,27 +2,17 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
-const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
+
 app.use(cors());
-const swaggerDocument = require('./swagger.json');
-
-// Serve static files from public directory
-app.use(express.static('public'));
-
-// Serve swagger.json directly
-app.get('/api-docs/swagger.json', (req, res) => {
-  res.json(swaggerDocument);
-});
-
-// Redirect /api-docs to /swagger.html
-app.get('/api-docs', (req, res) => {
-  res.redirect('/swagger.html');
-});
-
 app.use(express.json());
+
+// Swagger Documentation - BEFORE any other routes
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // MongoDB connection for serverless
 let isConnected = false;
@@ -55,9 +45,10 @@ const weatherSchema = new mongoose.Schema({
 
 const Weather = mongoose.model('Weather', weatherSchema);
 
+// Root endpoint
 app.get('/', (req, res) => res.send('✅ Weather API running'));
 
-// DB Connection middleware ONLY for API routes
+// DB Connection middleware ONLY for /api routes
 app.use('/api', async (req, res, next) => {
   try {
     await connectDB();
@@ -67,6 +58,7 @@ app.use('/api', async (req, res, next) => {
   }
 });
 
+// API Routes
 app.post('/api/v1/weather', async (req, res) => {
   try {
     const w = new Weather(req.body);
