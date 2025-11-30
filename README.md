@@ -10,7 +10,7 @@ Express.js REST API for weather data management with MongoDB.
 
 ## 📚 API Documentation
 - **Local:** http://localhost:3000/api-docs
-- **Production:** [Add deployed URL here after deployment]
+- **Production:** https://weather-api-kuyakim.onrender.com/
 
 ## 🛠️ Installation
 ```bash

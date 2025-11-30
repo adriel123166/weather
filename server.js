@@ -19,7 +19,7 @@ const swaggerOptions = {
     },
     servers: [
       { url: `http://localhost:${PORT}`, description: 'Local' },
-      { url: 'https://weather-api-kuyakim.onrender.com', description: 'Production' }
+      { url: 'https://weather-api-kuyakim.vercel.app', description: 'Production' }
     ]
   },
   apis: ['./server.js']
@@ -522,3 +522,5 @@ async function startServer() {
   }
 }
 startServer();
+
+module.exports = app;
