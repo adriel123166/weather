@@ -12,14 +12,22 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Swagger setup with custom options for Vercel
+// Serve swagger-ui static files explicitly
+app.use('/api-docs', express.static(path.join(__dirname, 'node_modules', 'swagger-ui-dist')));
+
+// Swagger setup
 const swaggerOptions = {
   customCss: '.swagger-ui .topbar { display: none }',
   customSiteTitle: "Weather API Documentation",
   swaggerOptions: {
-    persistAuthorization: true,
+    url: '/swagger.json',
   }
 };
+
+// Serve swagger.json file
+app.get('/swagger.json', (req, res) => {
+  res.json(swaggerDocument);
+});
 
 app.use('/api-docs', swaggerUi.serve);
 app.get('/api-docs', swaggerUi.setup(swaggerDocument, swaggerOptions));
