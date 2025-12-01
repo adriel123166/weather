@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const path = require('path');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 
@@ -11,8 +12,17 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Swagger Documentation - BEFORE any other routes
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+// Swagger setup with custom options for Vercel
+const swaggerOptions = {
+  customCss: '.swagger-ui .topbar { display: none }',
+  customSiteTitle: "Weather API Documentation",
+  swaggerOptions: {
+    persistAuthorization: true,
+  }
+};
+
+app.use('/api-docs', swaggerUi.serve);
+app.get('/api-docs', swaggerUi.setup(swaggerDocument, swaggerOptions));
 
 // MongoDB connection for serverless
 let isConnected = false;
