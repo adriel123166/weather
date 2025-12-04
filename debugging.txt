@@ -1,0 +1,85 @@
+=====================================================
+DEBUGGING QUESTIONS, TIPS, AND CHECKLIST
+=====================================================
+
+### Likely Debugging Questions (Panelist/Reviewer Focus)
+
+- **App Won't Start:** What did you check when the server won't start?
+- **Frontend Not Loading:** How do you diagnose the UI failing to load or assets missing?
+- **API Returns Error / 500:** How do you find the root cause of an API error?
+- **No Data / Empty Response:** Why is the API returning empty or malformed data?
+- **CORS / Network Errors:** How do you handle CORS or blocked requests?
+- **API Key / Auth Fail:** How do you debug authentication or third-party API failures?
+- **Slow Responses:** How do you profile or identify latency bottlenecks?
+- **Environment / Port Conflicts:** How do you detect and fix port or env issues?
+- **Reproducibility:** How do you create reliable reproductions or fallbacks?
+- **Logs & Monitoring:** What logging or monitoring do you have and how would you inspect it?
+
+---
+
+### Quick Debugging Checklist — Practical Steps
+
+1. **Reproduce the issue:** Try to reproduce with the exact steps the user/reviewer saw.
+2. **Check server process & logs:** Verify server started and examine console logs.
+3. **Check frontend console & network:** Use DevTools to inspect console errors and Network requests.
+4. **Test API directly:** Call endpoints from terminal to see raw responses (e.g., using `Invoke-RestMethod`).
+5. **Validate config & env:** Confirm env vars (API key, PORT) and `package.json` scripts.
+6. **Use fallback fixtures:** Swap to a static fixture to isolate external API problems.
+7. **Add quick logs:** Insert targeted `console.log` / `console.error` to inspect variables.
+8. **Check dependencies & node version:** Ensure `npm install` succeeded and Node version matches expectations.
+9. **Look for CORS and mixed-content:** Ensure endpoints and hosting use proper protocols and headers.
+10. **Rollback to known-good commit:** If recent changes broke things, switch to a previous commit.
+
+---
+
+### Specific Issue-centric Debugging Steps
+
+**Server Won't Start:**
+* Check process output where you ran `node server.js`.
+* Look for obvious errors (`EADDRINUSE`, syntax error).
+* Check port usage: `netstat -ano | Select-String '3000'` (PowerShell).
+* If `EADDRINUSE`, kill conflicting PID: `Stop-Process -Id <PID>` (PowerShell).
+* Confirm required env vars are set: `$env:WEATHER_API_KEY`.
+
+**Frontend Load or UI Blank / Errors:**
+* Open Browser **DevTools** -> Console: note any JS exceptions.
+* Network tab: ensure requests to `http://localhost:PORT/api/...` return 200 and JSON.
+* Verify assets paths: check `index.html` references (relative vs absolute).
+* If **CORS** errors appear, inspect server response headers.
+
+**API Returns 500 / Throws:**
+* Reproduce with `Invoke-RestMethod` to see stack or message.
+* Add `try/catch` in `api/index.js` to log stacktrace: `console.error(err.stack)`.
+* Validate request parameters (e.g., missing city).
+* If external API call fails, log upstream response and status.
+
+**Empty or Incorrect Data:**
+* Log raw upstream API response before mapping it to your shape.
+* Validate JSON parsing and property names.
+* Use a static fixture to rule out upstream variance.
+
+**Third-party API Auth Failures:**
+* Check that API key is set server-side (not in `index.html`) and is valid.
+* Print the outgoing request headers (redact key in logs).
+* Confirm provider rate limits haven't been exceeded.
+
+**CORS / Network Errors:**
+* If browser blocks request ensure server sets `Access-Control-Allow-Origin` (or enable `cors` middleware in Node).
+* Example quick install and usage:
+    ```bash
+    npm install cors
+    ```
+    In `server.js`:
+    ```javascript
+    const cors = require('cors');
+    app.use(cors());
+    ```
+
+**Slow Responses:**
+* Time the request from client and server (log timestamps).
+* Check whether delay is upstream (external API) or your processing.
+* Add brief profiling or use `console.time('fetch')` / `console.timeEnd('fetch')`.
+
+**Deployment-specific Issues:**
+* Check hosting logs (e.g., Vercel, Heroku dashboard) for runtime errors.
+* Confirm `vercel.json` or start scripts match the platform's expectations.
