@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume - Felix Adriel A. Hate</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            padding: 20px;
+        }
+        
+        .resume {
+            max-width: 850px;
+            margin: 0 auto;
+            background: white;
+            padding: 40px 50px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            margin-bottom: 20px;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+        
+        .contact-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        
+        .contact-info a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .contact-right {
+            text-align: right;
+        }
+        
+        hr {
+            border: none;
+            border-top: 2px solid #666;
+            margin: 15px 0;
+        }
+        
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            text-align: center;
+            background-color: #ddd;
+            padding: 5px;
+            margin: 20px 0 15px 0;
+            letter-spacing: 1px;
+        }
+        
+        .education-header, .experience-header, .project-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+        }
+        
+        .education-header strong, .experience-header strong, .project-header strong {
+            font-weight: 600;
+        }
+        
+        .education-header .location, .experience-header .dates, .project-header .dates {
+            text-align: right;
+        }
+        
+        .gpa {
+            margin-bottom: 10px;
+        }
+        
+        .skills-grid {
+            margin-left: 20px;
+        }
+        
+        .skill-row {
+            display: grid;
+            grid-template-columns: 120px 1fr;
+            margin-bottom: 8px;
+        }
+        
+        .skill-label {
+            font-weight: 600;
+        }
+        
+        ul {
+            margin-left: 35px;
+            margin-top: 5px;
+        }
+        
+        li {
+            margin-bottom: 6px;
+            line-height: 1.4;
+        }
+        
+        .job-title {
+            font-weight: 600;
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        
+        .project-title {
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .project-title a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        .sub-bullets {
+            margin-left: 20px;
+            list-style-type: circle;
+        }
+        
+        .certificate-title {
+            font-weight: 600;
+            margin-top: 15px;
+        }
+        
+        .certificate-title a {
+            color: #0066cc;
+            text-decoration: none;
+        }
+        
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            .resume {
+                box-shadow: none;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="resume">
+        <div class="header">
+            <h1>Felix Adriel A. Hate</h1>
+            <div class="contact-info">
+                <div class="contact-left">
+                    LinkedIn: <a href="https://www.linkedin.com/in/hate-felix-adriel-a-0369a3354/">https://www.linkedin.com/in/hate-felix-adriel-a-0369a3354/</a>
+                </div>
+                <div class="contact-right">
+                    Email: felixadriel123@gmail.com<br>
+                    Mobile: +63 965-382-2899
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <div class="section-title">EDUCATION</div>
+        
+        <div class="education-header">
+            <strong>New Era University</strong>
+            <div class="location">Quezon City, Philippines</div>
+        </div>
+        <div class="education-header">
+            <div class="gpa">Bachelor of Science in Information Technology</div>
+            <div class="dates">Expected Graduation: 2027</div>
+        </div>
+        
+        <hr>
+        
+        <div class="section-title">SKILLS SUMMARY</div>
+        
+        <div class="skills-grid">
+            <div class="skill-row">
+                <div class="skill-label">Languages:</div>
+                <div>SQL, JavaScript, Python, HTML</div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-label">Database:</div>
+                <div>Database Design, Data Analysis, Relational Databases</div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-label">Cloud:</div>
+                <div>Oracle Cloud Infrastructure, Oracle Cloud Data Management</div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-label">Tools:</div>
+                <div>Git, VS Code</div>
+            </div>
+            <div class="skill-row">
+                <div class="skill-label">Soft Skills:</div>
+                <div>Problem Solving, Team Collaboration, Analytical Thinking</div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <div class="section-title">WORK EXPERIENCE</div>
+        
+        <div class="job-title">Data Analytics | Peroptyx</div>
+        <div class="experience-header">
+            <div></div>
+            <div class="dates">2024 - Present</div>
+        </div>
+        <ul>
+            <li>Analyze and evaluate data quality to ensure accuracy and reliability of information</li>
+            <li>Review and assess search engine results, map data, and online content for relevance and precision</li>
+            <li>Identify patterns and trends in large datasets to support business intelligence initiatives</li>
+            <li>Collaborate with team members to maintain data integrity and improve evaluation processes</li>
+            <li>Provide detailed feedback and documentation on data analysis findings</li>
+        </ul>
+        
+        <hr>
+        
+        <div class="section-title">PROJECTS</div>
+        
+        <div class="project-title">Weather API Application | <a href="https://github.com/adrieli23166/weather">LINK</a></div>
+        <div class="experience-header">
+            <div></div>
+            <div class="dates">2025</div>
+        </div>
+        <ul class="sub-bullets">
+            <li>Developed a weather application using JavaScript to fetch and display real-time weather data</li>
+            <li>Integrated third-party weather API for accurate meteorological information</li>
+            <li>Implemented user-friendly interface for location-based weather queries</li>
+            <li>Designed responsive layout ensuring cross-device compatibility</li>
+        </ul>
+        
+        <div class="project-title">Healthcare Management System | <a href="https://github.com/adrieli23166/healthcare-management-system">LINK</a></div>
+        <div class="experience-header">
+            <div></div>
+            <div class="dates">2025</div>
+        </div>
+        <ul class="sub-bullets">
+            <li>Built comprehensive Healthcare Management System with Patient, Appointment, Billing, and Reports modules using JavaScript</li>
+            <li>Designed and implemented relational database schema for efficient patient data management</li>
+            <li>Created appointment scheduling system improving clinic workflow efficiency</li>
+            <li>Developed billing module with automated invoice generation and payment tracking</li>
+        </ul>
+        
+        <div class="project-title">Secure Utilities Desktop Application | <a href="https://github.com/adrieli23166/secure-utilities">LINK</a></div>
+        <div class="experience-header">
+            <div></div>
+            <div class="dates">2025</div>
+        </div>
+        <ul class="sub-bullets">
+            <li>Developed comprehensive desktop application with secure authentication and utility tools using Python</li>
+            <li>Implemented secure user authentication system with encryption for data protection</li>
+            <li>Created multiple utility tools for system management and productivity enhancement</li>
+            <li>Designed intuitive user interface ensuring ease of use and accessibility</li>
+        </ul>
+        
+        <hr>
+        
+        <div class="section-title">CERTIFICATES</div>
+        
+        <div class="certificate-title">SQL and Relational Databases 101 | <a href="#">CERTIFICATE</a></div>
+        <div class="experience-header">
+            <div></div>
+            <div class="dates">2024</div>
+        </div>
+        <ul class="sub-bullets">
+            <li>Mastered fundamental SQL concepts including queries, joins, and database operations</li>
+            <li>Gained expertise in relational database design principles and normalization</li>
+        </ul>
+        
+        <div class="certificate-title">Oracle Cloud Infrastructure Foundations Associate | <a href="#">BADGE</a></div>
+        <div class="experience-header">
+            <div></div>
+            <div class="dates">2024</div>
+        </div>
+        <ul class="sub-bullets">
+            <li>Completed comprehensive training in Oracle Cloud Infrastructure core services and architecture</li>
+            <li>Developed understanding of cloud computing concepts, networking, and security fundamentals</li>
+        </ul>
+        
+        <div class="certificate-title">Oracle Cloud Data Management Foundations Associate | <a href="#">BADGE</a></div>
+        <div class="experience-header">
+            <div></div>
+            <div class="dates">2024</div>
+        </div>
+        <ul class="sub-bullets">
+            <li>Acquired knowledge in cloud-based data management solutions and best practices</li>
+            <li>Learned to leverage Oracle Cloud services for efficient data storage and retrieval</li>
+        </ul>
+        
+        <div class="certificate-title">Oracle Cloud Infrastructure 2024 Certified AI Foundations Associate | <a href="#">BADGE</a></div>
+        <div class="experience-header">
+            <div></div>
+            <div class="dates">2024</div>
+        </div>
+        <ul class="sub-bullets">
+            <li>Gained foundational understanding of AI and machine learning concepts in cloud environments</li>
+            <li>Explored Oracle Cloud AI services and their practical applications in modern solutions</li>
+        </ul>
+    </div>
+</body>
+</html>

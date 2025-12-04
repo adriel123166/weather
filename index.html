@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Weather Dashboard</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 800px; margin: 50px auto; padding: 20px; }
+    .weather-card { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 8px; }
+    button { padding: 10px 20px; margin: 5px; cursor: pointer; }
+    input, textarea { width: 100%; padding: 8px; margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>🌤️ Weather Dashboard</h1>
+  
+  <!-- Create Weather Form -->
+  <h2>Add Weather Record</h2>
+  <form id="addWeatherForm">
+    <input type="text" id="station" placeholder="Station Name" required>
+    <input type="datetime-local" id="recordedAt" required>
+    <input type="number" id="temperature" placeholder="Temperature (°C)" step="0.1">
+    <input type="number" id="humidity" placeholder="Humidity (%)">
+    <input type="number" id="pressure" placeholder="Pressure (hPa)">
+    <input type="number" id="windSpeed" placeholder="Wind Speed (km/h)">
+    <input type="text" id="windDirection" placeholder="Wind Direction">
+    <textarea id="notes" placeholder="Notes"></textarea>
+    <button type="submit">Add Record</button>
+  </form>
+
+  <!-- Statistics -->
+  <h2>Statistics</h2>
+  <div id="stats"></div>
+
+  <!-- Weather Records -->
+  <h2>Weather Records</h2>
+  <button onclick="fetchWeather()">Refresh</button>
+  <div id="weatherList"></div>
+
+  <script>
+    const API_URL = 'https://weather-api-kuyakim.vercel.app/api/v1/weather';
+
+    // Fetch all weather records
+    async function fetchWeather() {
+      try {
+        const response = await fetch(API_URL + '?limit=10');
+        const data = await response.json();
+        
+        const weatherList = document.getElementById('weatherList');
+        weatherList.innerHTML = data.map(w => `
+          <div class="weather-card">
+            <h3>${w.station || 'Unknown Station'}</h3>
+            <p><strong>Date:</strong> ${new Date(w.recordedAt).toLocaleString()}</p>
+            <p><strong>Temperature:</strong> ${w.temperature}°C</p>
+            <p><strong>Humidity:</strong> ${w.humidity}%</p>
+            <p><strong>Pressure:</strong> ${w.pressure} hPa</p>
+            <p><strong>Wind:</strong> ${w.windSpeed} km/h ${w.windDirection || ''}</p>
+            <p><strong>Notes:</strong> ${w.notes || 'N/A'}</p>
+            <button onclick="deleteWeather('${w._id}')">Delete</button>
+          </div>
+        `).join('');
+      } catch (error) {
+        console.error('Error fetching weather:', error);
+      }
+    }
+
+    // Fetch statistics
+    async function fetchStats() {
+      try {
+        const response = await fetch(API_URL + '/stats');
+        const stats = await response.json();
+        
+        document.getElementById('stats').innerHTML = `
+          <div class="weather-card">
+            <p><strong>Total Records:</strong> ${stats.count}</p>
+            <p><strong>Avg Temperature:</strong> ${stats.avgTemp?.toFixed(1)}°C</p>
+            <p><strong>Avg Humidity:</strong> ${stats.avgHumidity?.toFixed(1)}%</p>
+            <p><strong>Min Temperature:</strong> ${stats.minTemp}°C</p>
+            <p><strong>Max Temperature:</strong> ${stats.maxTemp}°C</p>
+          </div>
+        `;
+      } catch (error) {
+        console.error('Error fetching stats:', error);
+      }
+    }
+
+    // Add new weather record
+    document.getElementById('addWeatherForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const weatherData = {
+        station: document.getElementById('station').value,
+        recordedAt: new Date(document.getElementById('recordedAt').value).toISOString(),
+        temperature: parseFloat(document.getElementById('temperature').value),
+        humidity: parseFloat(document.getElementById('humidity').value),
+        pressure: parseFloat(document.getElementById('pressure').value),
+        windSpeed: parseFloat(document.getElementById('windSpeed').value),
+        windDirection: document.getElementById('windDirection').value,
+        notes: document.getElementById('notes').value
+      };
+
+      try {
+        const response = await fetch(API_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(weatherData)
+        });
+
+        if (response.ok) {
+          alert('Weather record added!');
+          e.target.reset();
+          fetchWeather();
+          fetchStats();
+        }
+      } catch (error) {
+        console.error('Error adding weather:', error);
+      }
+    });
+
+    // Delete weather record
+    async function deleteWeather(id) {
+      if (!confirm('Delete this record?')) return;
+      
+      try {
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        fetchWeather();
+        fetchStats();
+      } catch (error) {
+        console.error('Error deleting weather:', error);
+      }
+    }
+
+    // Load data on page load
+    fetchWeather();
+    fetchStats();
+  </script>
+</body>
+</html>
