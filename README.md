@@ -6,22 +6,27 @@ Express.js REST API for weather data management with MongoDB Atlas.
 - 7 RESTful endpoints
 - MongoDB integration with Mongoose
 - Interactive Swagger API documentation
+- Frontend dashboard
 - Deployed on Vercel
 
-## 📚 Live API
-- **Production:** https://weather-api-kuyakim.vercel.app
-- **Swagger Docs:** https://weather-api-kuyakim.vercel.app/api-docs
+## 📚 Live URLs
+
+- **Frontend Dashboard:** https://weather-api-kuyakim.vercel.app/
+- **Swagger Documentation:** https://weather-api-kuyakim.vercel.app/api-docs
+- **Swagger JSON Spec:** https://weather-api-kuyakim.vercel.app/swagger.json
+- **API Base URL:** https://weather-api-kuyakim.vercel.app/api/v1/weather
 
 ## 📝 API Endpoints
 
 ### Weather Operations
-1. `GET /` - API health check
-2. `POST /api/v1/weather` - Create weather record
-3. `GET /api/v1/weather` - Get all records (with optional `?limit=10`)
-4. `GET /api/v1/weather/stats` - Get statistics
-5. `GET /api/v1/weather/{id}` - Get record by ID
-6. `PUT /api/v1/weather/{id}` - Update record
-7. `DELETE /api/v1/weather/{id}` - Delete record
+1. `GET /` - Frontend Dashboard
+2. `GET /status` - API health check
+3. `POST /api/v1/weather` - Create weather record
+4. `GET /api/v1/weather` - Get all records (with optional `?limit=10`)
+5. `GET /api/v1/weather/stats` - Get weather statistics
+6. `GET /api/v1/weather/{id}` - Get record by ID
+7. `PUT /api/v1/weather/{id}` - Update record
+8. `DELETE /api/v1/weather/{id}` - Delete record
 
 ## 🛠️ Local Development
 
@@ -49,7 +54,7 @@ Visit: http://localhost:3000/api-docs
 - **Framework:** Express.js
 - **Database:** MongoDB Atlas
 - **ODM:** Mongoose
-- **API Docs:** Swagger UI
+- **API Docs:** Swagger UI Express
 - **Deployment:** Vercel
 
 ## 🌐 Example Usage
@@ -65,7 +70,8 @@ curl -X POST https://weather-api-kuyakim.vercel.app/api/v1/weather \
     "humidity": 60,
     "pressure": 1013,
     "windSpeed": 15,
-    "windDirection": "NW"
+    "windDirection": "NW",
+    "notes": "Clear sky"
   }'
 ```
 
@@ -79,5 +85,45 @@ curl https://weather-api-kuyakim.vercel.app/api/v1/weather?limit=10
 curl https://weather-api-kuyakim.vercel.app/api/v1/weather/stats
 ```
 
+### Get Swagger JSON
+```bash
+curl https://weather-api-kuyakim.vercel.app/swagger.json
+```
+
+## 📄 OpenAPI Specification
+
+The complete API specification is available in JSON format at:
+**https://weather-api-kuyakim.vercel.app/swagger.json**
+
+You can import this into tools like:
+- Postman
+- Insomnia
+- SwaggerHub
+- API testing tools
+
+## 📁 Project Structure
+
+```
+weather-api/
+├── api/
+│   └── index.js          # Vercel serverless entry
+├── node_modules/
+├── .env                  # Environment variables (gitignored)
+├── .gitignore
+├── index.html            # Frontend dashboard
+├── package.json
+├── package-lock.json
+├── README.md
+├── server.js             # Main Express app
+├── swagger.json          # OpenAPI specification
+└── vercel.json           # Vercel configuration
+```
+
 ## 📄 License
 ISC
+
+## 👤 Author
+Felix Adriel
+
+## 🔗 Repository
+https://github.com/adriel123166/weather
