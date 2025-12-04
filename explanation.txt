@@ -1,0 +1,84 @@
+=====================================================
+EXPLANATION: PRESENTATION PLAN
+=====================================================
+
+Progress update: I created the presentation plan (todo list). Next I'll provide a slide-by-slide outline, a demo script with runnable commands, and a list of likely panelist questions with sample answers.
+
+Presentation guide
+Structure: 6-8 minutes talk + 4-6 minutes Q&A (adjust to your time).
+
+- Slide 1 — Title: Project name, your name, role, one-line summary (what the system does).
+    - Speaker note: "Hi — I'm X. This project is a lightweight weather web app that fetches and visualizes current weather using a small Node backend and a front-end UI."
+
+- Slide 2 — Problem & Goal: The user need you solve and measurable goal.
+    - Bold points: pain (hard to get quick local weather), aim (simple, fast, demoable).
+
+- Slide 3 — High-level Architecture: Quick diagram showing index.html (frontend), server.js (backend), api/index.js (API handling), external weather provider (or mocked data).
+    - Speaker note: "The UI calls our backend which consolidates API calls and serves data to the client. We keep API keys server-side and expose a small REST surface."
+
+- Slide 4 — Key Features: Bulleted feature list (current weather, search by city, minimal UI, API route).
+    - Call out anything special: offline support, caching, swagger.json for documentation (if used).
+- Slide 5 — Demo Setup & Flow: Short script of what you'll demo (open site, search city, show response, inspect network or logs).
+    - Speaker note: "I'll show the UI, perform a search, and then open the API endpoint and server logs briefly."
+
+- Slide 6 — Implementation Notes: Tech stack, important files: index.html, server.js, api/index.js, swagger.json.
+    - One-liners: why Node, design choices (server-side API key, simple file structure).
+
+- Slide 7 — Limitations & Future Work: Known constraints and next steps (rate limits, caching, testing, responsive improvements).
+
+- Slide 8 — Summary & Ask: Quick recap, what feedback you want, or what to evaluate.
+
+Demo script (concise, reliable)
+- Pre-demo checks (quickly): ensure dependencies installed and server runs.
+- Powershell commands to run locally:
+    cd 'C:\Users\Dwight\Downloads\weather-master\weather-master'
+    npm install
+    node server.js
+    # or if package.json has start script:
+    # npm start
+
+=====================================================
+WEATHER API DOCUMENTATION
+=====================================================
+
+Weather data operations
+
+- POST /api/v1/weather
+  Description: Create a new weather record
+- GET /api/v1/weather
+  Description: Get all weather records
+- GET /api/v1/weather/stats
+  Description: Get weather statistics
+- GET /api/v1/weather/{id}
+  Description: Get weather record by ID
+- PUT /api/v1/weather/{id}
+  Description: Update weather record
+- DELETE /api/v1/weather/{id}
+  Description: Delete weather record
+
+default
+- GET / API Health Check
+  Description: API Health Check
+
+=====================================================
+EXAMPLE CODE SNIPPET (GET by ID)
+=====================================================
+
+app.get('/api/v1/weather/:id', async (req, res) => {
+  try {
+    const w = await Weather.findById(req.params.id);
+    if (!w) return res.status(404).json({ message: 'Not found' });
+    res.json(w);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+Demo steps:
+1.	Open index.html or http://localhost:PORT (replace PORT printed by server).
+2.	Enter a city and show the returned weather summary.
+3.	Open DevTools → Network to show the API request and response.
+4.	Show server console output to demonstrate backend handling (or open api/index.js to highlight request handling).
+•	Fallback if external API or key fails:
+
+o	Mention you have a mocked response or local fixture you can load (swagger.json or sample JSON) and show the same flow quickly.

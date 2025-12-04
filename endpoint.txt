@@ -1,0 +1,160 @@
+=====================================================
+API DOCUMENTATION: WEATHER DATA OPERATIONS
+=====================================================
+
+### EXISTING ENDPOINTS (Base CRUD and Stats)
+
+- POST /api/v1/weather
+  Description: Create a new weather record
+- GET /api/v1/weather
+  Description: Get all weather records
+- GET /api/v1/weather/stats
+  Description: Get weather statistics
+- GET /api/v1/weather/{id}
+  Description: Get weather record by ID
+- PUT /api/v1/weather/{id}
+  Description: Update weather record (Full replacement)
+- DELETE /api/v1/weather/{id}
+  Description: Delete weather record
+- GET /API Health Check
+  Description: API Health Check
+
+---
+
+### SUGGESTED NEW ENDPOINTS
+
+#### 1. Filtering and Searching
+
+- GET /api/v1/weather/search
+  Description: Get weather records matching specific query criteria (city, date range).
+- GET /api/v1/weather/city/{city}
+  Description: Get the latest weather record for a specific city.
+- GET /api/v1/weather/date/{date}
+  Description: Get all weather records recorded on a specific date.
+
+#### 2. Time-Based Aggregation
+
+- GET /api/v1/weather/forecast/next24h
+  Description: Get the predicted weather forecast for the next 24 hours for a location.
+- GET /api/v1/weather/trends
+  Description: Get daily, weekly, or monthly average weather trends for a location.
+
+#### 3. Special Operations
+
+- POST /api/v1/weather/batch
+  Description: Create multiple new weather records in a single request (Bulk insert).
+- PATCH /api/v1/weather/{id}
+  Description: Partially update a weather record (e.g., only update the temperature).
+
+---
+
+=====================================================
+CODE IMPLEMENTATION (Node.js/Express/Mongoose Style)
+=====================================================
+
+### 1. Filtering and Searching Code
+
+// GET /api/v1/weather/search
+app.get('/api/v1/weather/search', async (req, res) => {
+  try {
+    const { city, startDate, endDate } = req.query;
+    const query = {};
+
+    if (city) query.city = city;
+    if (startDate && endDate) {
+      query.date = { $gte: new Date(startDate), $lte: new Date(endDate) };
+    }
+
+    const records = await Weather.find(query);
+    res.json(records);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET /api/v1/weather/city/:city
+app.get('/api/v1/weather/city/:city', async (req, res) => {
+  try {
+    const w = await Weather.findOne({ city: req.params.city }).sort({ date: -1 });
+
+    if (!w) return res.status(404).json({ message: 'City not found or no data available' });
+    res.json(w);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// GET /api/v1/weather/date/:date
+app.get('/api/v1/weather/date/:date', async (req, res) => {
+  try {
+    // Assuming date is passed as 'YYYY-MM-DD'
+    const targetDate = new Date(req.params.date);
+    const nextDate = new Date(targetDate);
+    nextDate.setDate(targetDate.getDate() + 1);
+
+    const records = await Weather.find({
+      date: { $gte: targetDate, $lt: nextDate }
+    });
+    res.json(records);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+### 2. Time-Based Aggregation Code
+
+// GET /api/v1/weather/forecast/next24h
+app.get('/api/v1/weather/forecast/next24h', async (req, res) => {
+  try {
+    // In a real app, this would call a prediction model or external API.
+    // Placeholder: Fetching a simulated forecast for demonstration.
+    const location = req.query.location || 'Default Location';
+    const forecast = await Weather.getForecast(location, 24);
+    res.json(forecast);
+  } catch (err) {
+    res.status(500).json({ message: 'Error generating forecast: ' + err.message });
+  }
+});
+
+// GET /api/v1/weather/trends
+app.get('/api/v1/weather/trends', async (req, res) => {
+  try {
+    const period = req.query.period || 'daily'; // e.g., 'daily', 'weekly'
+    const trends = await Weather.aggregateTrends(period);
+    res.json(trends);
+  } catch (err) {
+    res.status(500).json({ message: 'Error calculating trends: ' + err.message });
+  }
+});
+
+### 3. Special Operations Code
+
+// POST /api/v1/weather/batch
+app.post('/api/v1/weather/batch', async (req, res) => {
+  try {
+    const dataList = req.body;
+    if (!Array.isArray(dataList)) {
+      return res.status(400).json({ message: 'Request body must be an array of records' });
+    }
+    const results = await Weather.insertMany(dataList);
+    res.status(201).json({ message: `Successfully inserted ${results.length} records` });
+  } catch (err) {
+    res.status(500).json({ message: 'Batch insertion failed: ' + err.message });
+  }
+});
+
+// PATCH /api/v1/weather/:id
+app.patch('/api/v1/weather/:id', async (req, res) => {
+  try {
+    const w = await Weather.findByIdAndUpdate(
+      req.params.id,
+      { $set: req.body }, // Only updates fields included in req.body
+      { new: true, runValidators: true }
+    );
+
+    if (!w) return res.status(404).json({ message: 'Not found' });
+    res.json(w);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});

@@ -1,0 +1,54 @@
+Possible panelist questions and strong answers
+•	Architecture / Design
+o	Q: "Why a backend instead of direct client calls to the weather API?"
+o	A: "To protect API keys, centralize rate-limiting and data shaping, and add caching; the server is minimal but enables these concerns."
+•	
+Security
+o	Q: "How do you protect API keys and user data?"
+o	A: "API keys are stored server-side (not in index.html). We restrict external exposure by only exposing the necessary endpoints and would add HTTPS and env-based secrets for production."
+•
+Scalability & Performance
+o	Q: "How does this scale under load?"
+o	A: "Right now it's single-process Node; for scale we’d add caching (in-memory or Redis), a rate-limit layer, and horizontal scaling behind a load balancer."
+
+Reliability / Fault Tolerance
+o	Q: "What happens when the external weather API is down?"
+o	A: "We’d serve cached recent data and present a degraded UI message. For the demo, we prepared a static fallback fixture."
+
+Testing
+o	Q: "What tests exist?"
+o	A: "Currently manual verification and basic dev checks; next steps include unit tests for api/index.js, integration tests for endpoints, and end-to-end UI tests with Playwright or Cypress."
+
+Privacy & Compliance
+o	Q: "Do you store user locations?"
+o	A: "No persistent storage is used in the demo; searches are transient. If we collected location data, we'd add opt-in and a retention policy."
+
+Extensibility / Roadmap
+o	Q: "What features would you prioritize next?"
+o	A: "1) Robust caching and rate-limit handling, 
+    2) automated tests + CI, 
+    3) mobile responsive improvements, 
+    4) optional hourly forecast and user preferences."
+
+Implementation specifics
+o	Q: "Which file routes handle the API and where are they documented?"
+o	A: "api/index.js contains the route logic and swagger.json documents the endpoints for external devs."
+
+Metrics & Monitoring
+o	Q: "How will you monitor this in production?"
+o	A: "Add logs (structured), use health checks, and integrate APM (e.g. New Relic) and error tracking (Sentry) to capture issues."
+
+Presentation tips and logistics
+•	Timing: 60–90 seconds per content slide; reserve 2–3 minutes for the live demo as the highlight.
+•	Visuals: Use the architecture diagram and 1–2 screenshots (UI + Network tab). Keep slides uncluttered.
+•	Live demo advice: Practice the exact clicks 2–3 times; prepare a recorded gif in case networking fails.
+•	Handling tough questions: If unsure, say "I don't have that data yet; my plan is X" and offer a specific follow-up (e.g., "I can run a throughput test and share results afterwards").
+
+Optional deliverables I can create next
+•	A minimal slide deck (PowerPoint or Markdown slides).
+•	A one-page cheat-sheet of Q&A you can keep during the panel.
+•	A short recorded demo GIF for fallback.
+Would you like me to:
+•	(A) Draft the slide-by-slide talking points now,
+•	(B) Generate the one-page Q&A cheat-sheet, or
+•	(C) create the minimal slide deck?
