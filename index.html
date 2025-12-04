@@ -5,241 +5,59 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Weather Dashboard</title>
   <style>
-    * { box-sizing: border-box; }
-    body { 
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      max-width: 1200px; 
-      margin: 0 auto; 
-      padding: 20px;
-      background: #f5f5f5;
-    }
-    h1 { color: #2c3e50; text-align: center; }
-    h2 { color: #34495e; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
-    
-    .container { 
-      background: white; 
-      padding: 20px; 
-      margin: 20px 0; 
-      border-radius: 8px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    
-    .form-group { margin-bottom: 15px; }
-    .form-group label { 
-      display: block; 
-      margin-bottom: 5px; 
-      font-weight: bold;
-      color: #555;
-    }
-    
-    input, textarea, select { 
-      width: 100%; 
-      padding: 10px; 
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-    
-    input:focus, textarea:focus, select:focus {
-      outline: none;
-      border-color: #3498db;
-    }
-    
-    button { 
-      padding: 10px 20px; 
-      margin: 5px; 
-      cursor: pointer;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      transition: background 0.3s;
-    }
-    
-    .btn-primary { background: #3498db; color: white; }
-    .btn-primary:hover { background: #2980b9; }
-    
-    .btn-success { background: #27ae60; color: white; }
-    .btn-success:hover { background: #229954; }
-    
-    .btn-danger { background: #e74c3c; color: white; }
-    .btn-danger:hover { background: #c0392b; }
-    
-    .btn-warning { background: #f39c12; color: white; }
-    .btn-warning:hover { background: #e67e22; }
-    
-    .btn-secondary { background: #95a5a6; color: white; }
-    .btn-secondary:hover { background: #7f8c8d; }
-    
-    .search-box {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 20px;
-    }
-    
-    .search-box input {
-      flex: 1;
-    }
-    
-    .weather-card { 
-      border: 1px solid #ddd; 
-      padding: 15px; 
-      margin: 10px 0; 
-      border-radius: 8px;
-      background: #fafafa;
-      transition: box-shadow 0.3s;
-    }
-    
-    .weather-card:hover {
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    }
-    
-    .weather-card h3 { 
-      margin-top: 0; 
-      color: #2c3e50;
-      border-bottom: 2px solid #3498db;
-      padding-bottom: 5px;
-    }
-    
-    .weather-card p { margin: 8px 0; }
-    
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 15px;
-    }
-    
-    .stat-card {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      color: white;
-      padding: 20px;
-      border-radius: 8px;
-      text-align: center;
-    }
-    
-    .stat-card h4 { margin: 0 0 10px 0; }
-    .stat-card .value { font-size: 24px; font-weight: bold; }
-    
-    .modal {
-      display: none;
-      position: fixed;
-      z-index: 1000;
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.5);
-    }
-    
-    .modal-content {
-      background: white;
-      margin: 5% auto;
-      padding: 30px;
-      border-radius: 8px;
-      width: 90%;
-      max-width: 600px;
-      max-height: 80vh;
-      overflow-y: auto;
-    }
-    
-    .close {
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
-      cursor: pointer;
-      color: #aaa;
-    }
-    
-    .close:hover { color: #000; }
-    
-    .hidden { display: none; }
-    
-    .btn-group {
-      display: flex;
-      gap: 10px;
-      margin-top: 10px;
-    }
+    body { font-family: Arial, sans-serif; max-width: 900px; margin: 20px auto; padding: 20px; }
+    h1, h2 { color: #333; }
+    input, textarea, button { padding: 8px; margin: 5px 0; font-size: 14px; }
+    input, textarea { width: 100%; box-sizing: border-box; }
+    button { cursor: pointer; margin-right: 5px; }
+    .weather-card { border: 1px solid #ddd; padding: 15px; margin: 10px 0; border-radius: 5px; background: #f9f9f9; }
+    .search-box { margin: 20px 0; padding: 15px; background: #f0f0f0; border-radius: 5px; }
+    .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); }
+    .modal-content { background: white; margin: 5% auto; padding: 20px; width: 80%; max-width: 500px; border-radius: 5px; }
+    .close { float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
   </style>
 </head>
 <body>
-  <h1>🌤️ Weather Dashboard</h1>
+  <h1>Weather Dashboard</h1>
   
-  <!-- Statistics -->
-  <div class="container">
-    <h2>📊 Statistics</h2>
-    <div id="stats" class="stats-grid"></div>
+  <!-- Search Box -->
+  <div class="search-box">
+    <h2>Search</h2>
+    <input type="text" id="searchStation" placeholder="Search by station name...">
+    <input type="date" id="searchDate">
+    <button onclick="searchWeather()">Search</button>
+    <button onclick="clearSearch()">Clear</button>
   </div>
 
-  <!-- Search & Filter -->
-  <div class="container">
-    <h2>🔍 Search & Filter</h2>
-    <div class="search-box">
-      <input type="text" id="searchInput" placeholder="Search by station name...">
-      <input type="date" id="searchDate" placeholder="Filter by date">
-      <button class="btn-primary" onclick="searchWeather()">Search</button>
-      <button class="btn-secondary" onclick="clearSearch()">Clear</button>
-      <button class="btn-success" onclick="openAddModal()">➕ Add New</button>
-    </div>
-  </div>
+  <!-- Add Button -->
+  <button onclick="openAddModal()">Add New Record</button>
+
+  <!-- Statistics -->
+  <h2>Statistics</h2>
+  <div id="stats"></div>
 
   <!-- Weather Records -->
-  <div class="container">
-    <h2>📋 Weather Records</h2>
-    <button class="btn-primary" onclick="fetchWeather()">🔄 Refresh</button>
-    <div id="weatherList"></div>
-  </div>
+  <h2>Weather Records</h2>
+  <button onclick="fetchWeather()">Refresh</button>
+  <div id="weatherList"></div>
 
-  <!-- Add/Edit Modal -->
-  <div id="weatherModal" class="modal">
+  <!-- Modal -->
+  <div id="modal" class="modal">
     <div class="modal-content">
       <span class="close" onclick="closeModal()">&times;</span>
       <h2 id="modalTitle">Add Weather Record</h2>
       <form id="weatherForm">
         <input type="hidden" id="recordId">
-        
-        <div class="form-group">
-          <label>Station Name *</label>
-          <input type="text" id="station" required>
-        </div>
-        
-        <div class="form-group">
-          <label>Date & Time *</label>
-          <input type="datetime-local" id="recordedAt" required>
-        </div>
-        
-        <div class="form-group">
-          <label>Temperature (°C)</label>
-          <input type="number" id="temperature" step="0.1" placeholder="25.5">
-        </div>
-        
-        <div class="form-group">
-          <label>Humidity (%)</label>
-          <input type="number" id="humidity" placeholder="60">
-        </div>
-        
-        <div class="form-group">
-          <label>Pressure (hPa)</label>
-          <input type="number" id="pressure" placeholder="1013">
-        </div>
-        
-        <div class="form-group">
-          <label>Wind Speed (km/h)</label>
-          <input type="number" id="windSpeed" placeholder="15">
-        </div>
-        
-        <div class="form-group">
-          <label>Wind Direction</label>
-          <input type="text" id="windDirection" placeholder="NW">
-        </div>
-        
-        <div class="form-group">
-          <label>Notes</label>
-          <textarea id="notes" rows="3" placeholder="Additional notes..."></textarea>
-        </div>
-        
-        <div class="btn-group">
-          <button type="submit" class="btn-success">💾 Save</button>
-          <button type="button" class="btn-secondary" onclick="closeModal()">Cancel</button>
-        </div>
+        <input type="text" id="station" placeholder="Station Name" required>
+        <input type="datetime-local" id="recordedAt" required>
+        <input type="number" id="temperature" placeholder="Temperature (°C)" step="0.1">
+        <input type="number" id="humidity" placeholder="Humidity (%)">
+        <input type="number" id="pressure" placeholder="Pressure (hPa)">
+        <input type="number" id="windSpeed" placeholder="Wind Speed (km/h)">
+        <input type="text" id="windDirection" placeholder="Wind Direction">
+        <textarea id="notes" placeholder="Notes" rows="3"></textarea>
+        <button type="submit">Save</button>
+        <button type="button" onclick="closeModal()">Cancel</button>
       </form>
     </div>
   </div>
@@ -255,33 +73,26 @@
         allWeatherData = await response.json();
         displayWeather(allWeatherData);
       } catch (error) {
-        console.error('Error fetching weather:', error);
-        alert('Error loading weather data');
+        console.error('Error:', error);
       }
     }
 
     // Display weather records
     function displayWeather(data) {
       const weatherList = document.getElementById('weatherList');
-      
       if (data.length === 0) {
         weatherList.innerHTML = '<p>No records found.</p>';
         return;
       }
-      
       weatherList.innerHTML = data.map(w => `
         <div class="weather-card">
-          <h3>📍 ${w.station || 'Unknown Station'}</h3>
-          <p><strong>🕐 Date:</strong> ${new Date(w.recordedAt).toLocaleString()}</p>
-          <p><strong>🌡️ Temperature:</strong> ${w.temperature || 'N/A'}°C</p>
-          <p><strong>💧 Humidity:</strong> ${w.humidity || 'N/A'}%</p>
-          <p><strong>🔽 Pressure:</strong> ${w.pressure || 'N/A'} hPa</p>
-          <p><strong>💨 Wind:</strong> ${w.windSpeed || 'N/A'} km/h ${w.windDirection || ''}</p>
-          <p><strong>📝 Notes:</strong> ${w.notes || 'N/A'}</p>
-          <div class="btn-group">
-            <button class="btn-warning" onclick='openEditModal(${JSON.stringify(w)})'>✏️ Edit</button>
-            <button class="btn-danger" onclick="deleteWeather('${w._id}')">🗑️ Delete</button>
-          </div>
+          <h3>${w.station || 'Unknown Station'}</h3>
+          <p><strong>Date:</strong> ${new Date(w.recordedAt).toLocaleString()}</p>
+          <p><strong>Temperature:</strong> ${w.temperature}°C | <strong>Humidity:</strong> ${w.humidity}%</p>
+          <p><strong>Pressure:</strong> ${w.pressure} hPa | <strong>Wind:</strong> ${w.windSpeed} km/h ${w.windDirection || ''}</p>
+          <p><strong>Notes:</strong> ${w.notes || 'N/A'}</p>
+          <button onclick='editWeather(${JSON.stringify(w)})'>Edit</button>
+          <button onclick="deleteWeather('${w._id}')">Delete</button>
         </div>
       `).join('');
     }
@@ -291,45 +102,28 @@
       try {
         const response = await fetch(API_URL + '/stats');
         const stats = await response.json();
-        
         document.getElementById('stats').innerHTML = `
-          <div class="stat-card">
-            <h4>📊 Total Records</h4>
-            <div class="value">${stats.count || 0}</div>
-          </div>
-          <div class="stat-card">
-            <h4>🌡️ Avg Temperature</h4>
-            <div class="value">${stats.avgTemp?.toFixed(1) || 'N/A'}°C</div>
-          </div>
-          <div class="stat-card">
-            <h4>💧 Avg Humidity</h4>
-            <div class="value">${stats.avgHumidity?.toFixed(1) || 'N/A'}%</div>
-          </div>
-          <div class="stat-card">
-            <h4>❄️ Min Temp</h4>
-            <div class="value">${stats.minTemp || 'N/A'}°C</div>
-          </div>
-          <div class="stat-card">
-            <h4>🔥 Max Temp</h4>
-            <div class="value">${stats.maxTemp || 'N/A'}°C</div>
+          <div class="weather-card">
+            <p><strong>Total:</strong> ${stats.count} | <strong>Avg Temp:</strong> ${stats.avgTemp?.toFixed(1)}°C | 
+            <strong>Avg Humidity:</strong> ${stats.avgHumidity?.toFixed(1)}% | <strong>Min:</strong> ${stats.minTemp}°C | 
+            <strong>Max:</strong> ${stats.maxTemp}°C</p>
           </div>
         `;
       } catch (error) {
-        console.error('Error fetching stats:', error);
+        console.error('Error:', error);
       }
     }
 
     // Search weather
     function searchWeather() {
-      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const searchTerm = document.getElementById('searchStation').value.toLowerCase();
       const searchDate = document.getElementById('searchDate').value;
       
       let filtered = allWeatherData;
       
       if (searchTerm) {
         filtered = filtered.filter(w => 
-          (w.station || '').toLowerCase().includes(searchTerm) ||
-          (w.notes || '').toLowerCase().includes(searchTerm)
+          (w.station || '').toLowerCase().includes(searchTerm)
         );
       }
       
@@ -345,7 +139,7 @@
 
     // Clear search
     function clearSearch() {
-      document.getElementById('searchInput').value = '';
+      document.getElementById('searchStation').value = '';
       document.getElementById('searchDate').value = '';
       displayWeather(allWeatherData);
     }
@@ -355,11 +149,11 @@
       document.getElementById('modalTitle').textContent = 'Add Weather Record';
       document.getElementById('weatherForm').reset();
       document.getElementById('recordId').value = '';
-      document.getElementById('weatherModal').style.display = 'block';
+      document.getElementById('modal').style.display = 'block';
     }
 
-    // Open edit modal
-    function openEditModal(weather) {
+    // Edit weather
+    function editWeather(weather) {
       document.getElementById('modalTitle').textContent = 'Edit Weather Record';
       document.getElementById('recordId').value = weather._id;
       document.getElementById('station').value = weather.station || '';
@@ -370,15 +164,15 @@
       document.getElementById('windSpeed').value = weather.windSpeed || '';
       document.getElementById('windDirection').value = weather.windDirection || '';
       document.getElementById('notes').value = weather.notes || '';
-      document.getElementById('weatherModal').style.display = 'block';
+      document.getElementById('modal').style.display = 'block';
     }
 
     // Close modal
     function closeModal() {
-      document.getElementById('weatherModal').style.display = 'none';
+      document.getElementById('modal').style.display = 'none';
     }
 
-    // Submit form (Add or Edit)
+    // Submit form
     document.getElementById('weatherForm').addEventListener('submit', async (e) => {
       e.preventDefault();
       
@@ -409,41 +203,32 @@
           closeModal();
           fetchWeather();
           fetchStats();
-        } else {
-          alert('Error saving record');
         }
       } catch (error) {
-        console.error('Error saving weather:', error);
-        alert('Error saving record');
+        console.error('Error:', error);
       }
     });
 
-    // Delete weather record
+    // Delete weather
     async function deleteWeather(id) {
-      if (!confirm('Are you sure you want to delete this record?')) return;
+      if (!confirm('Delete this record?')) return;
       
       try {
-        const response = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
-        if (response.ok) {
-          alert('Record deleted!');
-          fetchWeather();
-          fetchStats();
-        }
+        await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+        fetchWeather();
+        fetchStats();
       } catch (error) {
-        console.error('Error deleting weather:', error);
-        alert('Error deleting record');
+        console.error('Error:', error);
       }
     }
 
     // Close modal when clicking outside
     window.onclick = function(event) {
-      const modal = document.getElementById('weatherModal');
-      if (event.target == modal) {
-        closeModal();
-      }
+      const modal = document.getElementById('modal');
+      if (event.target == modal) closeModal();
     }
 
-    // Load data on page load
+    // Load data
     fetchWeather();
     fetchStats();
   </script>
