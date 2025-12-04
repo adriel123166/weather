@@ -66,6 +66,11 @@ const weatherSchema = new mongoose.Schema({
 
 const Weather = mongoose.model('Weather', weatherSchema);
 
+// Root endpoint - serve frontend
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // API status endpoint
 app.get('/status', (req, res) => res.send('✅ Weather API running'));
 
