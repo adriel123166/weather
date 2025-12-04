@@ -12,6 +12,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Serve static files (for frontend)
+app.use(express.static(__dirname));
+
 // Serve swagger-ui static files explicitly
 app.use('/api-docs', express.static(path.join(__dirname, 'node_modules', 'swagger-ui-dist')));
 
@@ -63,8 +66,8 @@ const weatherSchema = new mongoose.Schema({
 
 const Weather = mongoose.model('Weather', weatherSchema);
 
-// Root endpoint
-app.get('/', (req, res) => res.send('✅ Weather API running'));
+// API status endpoint
+app.get('/status', (req, res) => res.send('✅ Weather API running'));
 
 // DB Connection middleware ONLY for /api routes
 app.use('/api', async (req, res, next) => {
