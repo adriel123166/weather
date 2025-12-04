@@ -94,6 +94,59 @@
         }
       }
     },
+    "/api/v1/weather/date/{date}": {
+      "get": {
+        "summary": "Get weather records by specific date",
+        "tags": ["Weather"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "date",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "date"
+            },
+            "description": "Date in YYYY-MM-DD format",
+            "example": "2025-12-04"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of weather records for the specified date"
+          },
+          "400": {
+            "description": "Invalid date format"
+          }
+        }
+      }
+    },
+    "/api/v1/weather/station/{station}": {
+      "get": {
+        "summary": "Get weather records by city/station name",
+        "tags": ["Weather"],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "station",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Station or city name (case-insensitive partial match)",
+            "example": "Manila"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of weather records for the specified station"
+          },
+          "500": {
+            "description": "Server error"
+          }
+        }
+      }
+    },
     "/api/v1/weather/{id}": {
       "get": {
         "summary": "Get weather record by ID",

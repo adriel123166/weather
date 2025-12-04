@@ -157,6 +157,51 @@ app.delete('/api/v1/weather/:id', async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 });
+// ...existing code up to line 155...
+
+app.delete('/api/v1/weather/:id', async (req, res) => {
+  try {
+    const w = await Weather.findByIdAndDelete(req.params.id);
+    if (!w) return res.status(404).json({ message: 'Not found' });
+    res.json({ message: 'Deleted' });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
+// NEW: Get weather records by specific date
+app.get('/api/v1/weather/date/:date', async (req, res) => {
+  try {
+    const date = new Date(req.params.date);
+    const nextDate = new Date(date);
+    nextDate.setDate(nextDate.getDate() + 1);
+    
+    const records = await Weather.find({
+      recordedAt: {
+        $gte: date,
+        $lt: nextDate
+      }
+    }).sort({ recordedAt: -1 });
+    
+    res.json(records);
+  } catch (err) {
+    res.status(400).json({ message: 'Invalid date format. Use YYYY-MM-DD' });
+  }
+});
+
+// NEW: Get weather records by city/station
+app.get('/api/v1/weather/station/:station', async (req, res) => {
+  try {
+    const records = await Weather.find({
+      station: { $regex: req.params.station, $options: 'i' }
+    }).sort({ recordedAt: -1 });
+    
+    res.json(records);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 
 // Start server (local development only)
 if (require.main === module) {
